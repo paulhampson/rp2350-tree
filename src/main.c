@@ -1,19 +1,44 @@
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "pico/stdlib.h"
 #include "cli.h"
 
 static cli_status_t command_help(int argc, char **argv);
+static cli_status_t command_gpio(int argc, char **argv);
 
-cmd_t cli_cmds[1] = {
+cmd_t cli_cmds[] = {
     {
         .cmd = "help",
         .func = command_help
     },
+    {
+        .cmd = "gpio",
+        .func = command_gpio
+    }
 };
 
 static cli_status_t command_help(int argc, char **argv)
 {
-    printf("This is the help menu\n");
+    printf("The following commands are available:\n");
+    printf("\tgpio <pin> <value>        Set GPIO pin to defined value\n");
+    printf("\thelp                      Show this help message\n");
+
+    return CLI_OK;
+}
+
+static cli_status_t command_gpio(int argc, char **argv)
+{
+    if (argc != 3) {
+        return CLI_E_INVALID_ARGS;
+    }
+    printf("GPIO pin %s set to %s\n", argv[1], argv[2]);
+    const int pin = atoi(argv[1]);
+    const int value = atoi(argv[2]);
+
+    gpio_init(pin);
+    gpio_set_dir(pin, GPIO_OUT);
+    gpio_put(pin, value);
 
     return CLI_OK;
 }
