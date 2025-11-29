@@ -11,7 +11,12 @@ pico_sdk_init()
 
 # project
 add_executable(rp2350_tree
-	src/main.c
+		src/main.c
+		src/embedded-cli/cli.c
+)
+
+target_include_directories(rp2350_tree PRIVATE
+		src/embedded-cli/
 )
 
 target_link_libraries(rp2350_tree pico_stdlib pico_stdio_usb)
