@@ -16,6 +16,11 @@ typedef struct sLedFlashModeState
     bool is_on;
 } sLedFlashModeState;
 
+typedef struct sLedSequenceState
+{
+    uint current_led;
+} sLedSequenceState;
+
 typedef struct sLedState
 {
     eLedMode led_mode;
@@ -25,5 +30,6 @@ typedef struct sLedState
     uint num_leds;
     union {
         sLedFlashModeState flash_all;
+        sLedSequenceState sequence;
     } mode_state;
 } sLedState;
