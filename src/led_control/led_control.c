@@ -26,6 +26,18 @@ void led_set_mode(sLedState* led_state, const eLedMode led_mode)
         case LED_FLASH_ALL:
             led_flash_mode_init(led_state);
             break;
+        case LED_ALL_ON:
+            for (uint i = 0; i < led_state->num_leds; i++)
+            {
+                gpio_put(led_state->led_map[i], true);
+            }
+            break;
+        case LED_ALL_OFF:
+            for (uint i = 0; i < led_state->num_leds; i++)
+            {
+                gpio_put(led_state->led_map[i], false);
+            }
+            break;
         default:
             // do nothing
             break;
@@ -40,6 +52,8 @@ void run_led_control(sLedState* led_state)
         case LED_FLASH_ALL:
             run_flash_mode(led_state);
             break;
+        case LED_ALL_ON:
+        case LED_ALL_OFF:
         default:
             // do nothing
             break;

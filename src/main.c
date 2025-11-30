@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "cli.h"
 #include "led_control.h"
@@ -7,8 +8,9 @@
 
 static cli_status_t command_help(int argc, char **argv);
 static cli_status_t command_gpio(int argc, char **argv);
+static cli_status_t command_led(int argc, char **argv);
 
-cmd_t cli_cmds[] = {
+static cmd_t cli_cmds[] = {
     {
         .cmd = "help",
         .func = command_help
@@ -16,10 +18,14 @@ cmd_t cli_cmds[] = {
     {
         .cmd = "gpio",
         .func = command_gpio
+    },
+    {
+        .cmd = "led",
+        .func = command_led
     }
 };
 
-uint gpio_led_map[] = {
+static uint gpio_led_map[] = {
     // gpio pin, tree ID
     2,  // star
     14, // 1
@@ -48,11 +54,16 @@ uint gpio_led_map[] = {
     22, // 24
 };
 
-const uint LED_COUNT = sizeof(gpio_led_map) / sizeof(uint);
+const static uint LED_COUNT = sizeof(gpio_led_map) / sizeof(uint);
+
+static sLedState led_state;
 
 static cli_status_t command_help(int argc, char **argv)
 {
     printf("The following commands are available:\n");
+    printf("\tled flash <interval>      Flash LEDs every <interval> milliseconds\n");
+    printf("\tled off                   Turn off all LEDs\n");
+    printf("\tled on                    Turn on all LEDs\n");
     printf("\tgpio <pin> <value>        Set GPIO pin to defined value\n");
     printf("\thelp                      Show this help message\n");
 
@@ -75,8 +86,29 @@ static cli_status_t command_gpio(int argc, char **argv)
     return CLI_OK;
 }
 
-static cli_status_t command_led_flash(int argc, char **argv)
+static cli_status_t command_led(int argc, char **argv)
 {
+    if (argc < 2) {
+        return CLI_E_INVALID_ARGS;
+    }
+
+    if (0 == strcmp(argv[1], "flash") && argc == 3)
+    {
+        const int interval_ms = atoi(argv[2]);
+        led_set_mode(&led_state, LED_FLASH_ALL);
+        led_set_interval_us(&led_state, interval_ms * 1000);
+    } else if (0 == strcmp(argv[1], "on") && argc == 2)
+    {
+        led_set_mode(&led_state, LED_ALL_ON);
+    } else if (0 == strcmp(argv[1], "off") && argc == 2)
+    {
+        led_set_mode(&led_state, LED_ALL_OFF);
+    }
+    else
+    {
+        return CLI_E_INVALID_ARGS;
+    }
+
     return CLI_OK;
 }
 
@@ -95,10 +127,8 @@ int main() {
     stdio_init_all();
     printf("Welcome to the RP2350 Christmas Tree!\n");
 
-    sLedState led_state;
     led_set_led_map(&led_state, gpio_led_map, LED_COUNT);
-    led_set_interval_us(&led_state, 250000);
-    led_set_mode(&led_state, LED_FLASH_ALL);
+    led_set_mode(&led_state, LED_ALL_ON);
 
     repeating_timer_t led_timer;
     add_repeating_timer_us (-100, scheduled_led, &led_state, &led_timer);
