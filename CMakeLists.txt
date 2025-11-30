@@ -13,10 +13,14 @@ pico_sdk_init()
 add_executable(rp2350_tree
 		src/main.c
 		src/embedded-cli/cli.c
+		src/led_control/led_control.c
+		src/led_control/led_flash_mode.c
 )
 
 target_include_directories(rp2350_tree PRIVATE
 		src/embedded-cli/
+		src/led_control/
+		src/
 )
 
 target_link_libraries(rp2350_tree pico_stdlib pico_stdio_usb)

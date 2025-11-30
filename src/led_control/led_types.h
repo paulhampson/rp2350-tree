@@ -1,0 +1,29 @@
+#pragma once
+#include "pico/types.h"
+
+
+
+typedef enum
+{
+    LED_FLASH_ALL,
+    LED_SEQUENCE,
+    LED_ALL_ON,
+    LED_ALL_OFF,
+} eLedMode;
+
+typedef struct sLedFlashModeState
+{
+    bool is_on;
+} sLedFlashModeState;
+
+typedef struct sLedState
+{
+    eLedMode led_mode;
+    absolute_time_t last_action_time;
+    uint interval_us;
+    uint* led_map;
+    uint num_leds;
+    union {
+        sLedFlashModeState flash_all;
+    } mode_state;
+} sLedState;
