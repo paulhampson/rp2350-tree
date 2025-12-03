@@ -16,6 +16,7 @@ add_executable(rp2350_tree
 		src/led_control/led_control.c
 		src/led_control/led_flash_mode.c
 		src/led_control/led_sequence.c
+		src/led_control/led_random_sequence.c
 )
 
 target_include_directories(rp2350_tree PRIVATE

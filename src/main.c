@@ -65,6 +65,7 @@ static cli_status_t command_help(int argc, char **argv)
     printf("\tled off                   Turn off all LEDs\n");
     printf("\tled on                    Turn on all LEDs\n");
     printf("\tled sequence <interval>   Sequence through LEDs in tree order, change LED every <interval> milliseconds\n");
+    printf("\tled randseq <interval>    Randomly sequence through the order, toggle and LED evey <interval> milliseconds\n");
     printf("\tgpio <pin> <value>        Set GPIO pin to defined value\n");
     printf("\thelp                      Show this help message\n");
 
@@ -108,6 +109,11 @@ static cli_status_t command_led(int argc, char **argv)
     {
         const int interval_ms = atoi(argv[2]);
         led_set_mode(&led_state, LED_SEQUENCE);
+        led_set_interval_us(&led_state, interval_ms * 1000);
+    } else if (0 == strcmp(argv[1], "randseq") && argc == 3)
+    {
+        const int interval_ms = atoi(argv[2]);
+        led_set_mode(&led_state, LED_RANDOM_SEQUENCE);
         led_set_interval_us(&led_state, interval_ms * 1000);
     }
     else

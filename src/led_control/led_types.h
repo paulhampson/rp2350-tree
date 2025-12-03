@@ -9,6 +9,7 @@ typedef enum
     LED_SEQUENCE,
     LED_ALL_ON,
     LED_ALL_OFF,
+    LED_RANDOM_SEQUENCE,
 } eLedMode;
 
 typedef struct sLedFlashModeState
@@ -21,6 +22,11 @@ typedef struct sLedSequenceState
     uint current_led;
 } sLedSequenceState;
 
+typedef struct sLedRandomSequenceState
+{
+    uint led_status_bit_map;
+} sLedRandomSequenceState;
+
 typedef struct sLedState
 {
     eLedMode led_mode;
@@ -31,5 +37,6 @@ typedef struct sLedState
     union {
         sLedFlashModeState flash_all;
         sLedSequenceState sequence;
+        sLedRandomSequenceState random_sequence;
     } mode_state;
 } sLedState;

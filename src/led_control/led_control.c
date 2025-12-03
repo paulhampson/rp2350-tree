@@ -1,6 +1,7 @@
 #include "led_control.h"
 #include "hardware/gpio.h"
 #include "led_flash_mode.h"
+#include "led_random_sequence.h"
 #include "led_sequence.h"
 
 static void set_all_leds(sLedState* led_state, const bool is_on)
@@ -45,6 +46,10 @@ void led_set_mode(sLedState* led_state, const eLedMode led_mode)
             set_all_leds(led_state, false);
             led_sequence_mode_init(led_state);
             break;
+        case LED_RANDOM_SEQUENCE:
+            set_all_leds(led_state, false);
+            led_random_sequence_mode_init(led_state);
+            break;
         default:
             // do nothing
             break;
@@ -61,6 +66,9 @@ void run_led_control(sLedState* led_state)
             break;
         case LED_SEQUENCE:
             run_sequence_mode(led_state);
+            break;
+        case LED_RANDOM_SEQUENCE:
+            run_random_sequence_mode(led_state);
             break;
         case LED_ALL_ON:
         case LED_ALL_OFF:
